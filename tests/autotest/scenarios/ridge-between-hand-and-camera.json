@@ -1,0 +1,62 @@
+{
+  "name": "ridge-between-hand-and-camera",
+  "description": "At Map, with the focus as the pivot (at the place of the town view), a full turn. The land between the pivot and the camera (in the model a ring of hills that goes over the line) stops the spring arm, which examines the land at many points (near each other at the pivot, farther apart near the camera) and between them. The camera stays above the land and the desired distance does not change.",
+  "setup": {
+    "stage": "Map",
+    "cursor": [
+      0.5,
+      0.6
+    ],
+    "settings": {
+      "pivotOnHand": false
+    }
+  },
+  "steps": [
+    {
+      "drag": "middle",
+      "at": [
+        0.5,
+        0.6
+      ],
+      "right": 1600,
+      "up": 0,
+      "seconds": 4.0
+    },
+    {
+      "wait": 0.3
+    }
+  ],
+  "checks": [
+    {
+      "rule": "aboveLand",
+      "metres": 0.5
+    },
+    {
+      "rule": "noJump"
+    },
+    {
+      "rule": "noInvariant"
+    },
+    {
+      "rule": "glideStops",
+      "seconds": 2.5
+    },
+    {
+      "rule": "desiredConstant",
+      "percent": 0.1
+    },
+    {
+      "rule": "change",
+      "of": "heading",
+      "min": 60
+    }
+  ],
+  "offline": {
+    "world": "ridge",
+    "fps": [
+      30,
+      60,
+      144
+    ]
+  }
+}

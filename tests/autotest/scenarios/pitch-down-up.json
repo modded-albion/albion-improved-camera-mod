@@ -1,0 +1,84 @@
+{
+  "name": "pitch-down-up",
+  "description": "A vertical middle drag at Production makes the view steeper, then flatter, about the land under the hand.",
+  "setup": {
+    "stage": "Production",
+    "cursor": [
+      0.5,
+      0.6
+    ]
+  },
+  "steps": [
+    {
+      "drag": "middle",
+      "at": [
+        0.5,
+        0.6
+      ],
+      "right": 0,
+      "up": -300,
+      "seconds": 1.0,
+      "keepHeld": true
+    },
+    {
+      "move": {
+        "right": 0,
+        "up": 300
+      },
+      "seconds": 1.0
+    },
+    {
+      "release": "middle"
+    },
+    {
+      "wait": 0.3
+    }
+  ],
+  "checks": [
+    {
+      "rule": "pivotFixed",
+      "pixels": 2
+    },
+    {
+      "rule": "desiredConstant",
+      "percent": 0.1
+    },
+    {
+      "rule": "cursorLock"
+    },
+    {
+      "rule": "aboveLand",
+      "metres": 0.5
+    },
+    {
+      "rule": "noJump"
+    },
+    {
+      "rule": "noInvariant"
+    },
+    {
+      "rule": "glideStops",
+      "seconds": 2.5
+    },
+    {
+      "rule": "event",
+      "kind": "pivot",
+      "contains": "(middle press)",
+      "min": 1,
+      "max": 1
+    },
+    {
+      "rule": "change",
+      "of": "heading",
+      "max": 1
+    }
+  ],
+  "offline": {
+    "world": "hills",
+    "fps": [
+      30,
+      60,
+      144
+    ]
+  }
+}

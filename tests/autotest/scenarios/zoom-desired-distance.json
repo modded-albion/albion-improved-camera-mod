@@ -1,0 +1,50 @@
+{
+  "name": "zoom-desired-distance",
+  "description": "Three wheel notches in at Production: the height of the zoom falls by 1.25 for each notch, and the tilt of the new stage makes the desired distance of the spring arm about 0.58 of the start (0.5 to 0.7: the land under the cursor changes it in the game).",
+  "setup": {
+    "stage": "Production",
+    "cursor": [
+      0.5,
+      0.5
+    ]
+  },
+  "steps": [
+    {
+      "wheel": 3,
+      "interval": 0.1
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "checks": [
+    {
+      "rule": "aboveLand",
+      "metres": 0.5
+    },
+    {
+      "rule": "noJump"
+    },
+    {
+      "rule": "noInvariant"
+    },
+    {
+      "rule": "glideStops",
+      "seconds": 2.5
+    },
+    {
+      "rule": "change",
+      "of": "desired",
+      "min": 0.5,
+      "max": 0.7
+    }
+  ],
+  "offline": {
+    "world": "hills",
+    "fps": [
+      30,
+      60,
+      144
+    ]
+  }
+}

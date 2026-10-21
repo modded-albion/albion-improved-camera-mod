@@ -1,0 +1,99 @@
+{
+  "name": "rotate-pitch-buildings",
+  "description": "Near a building at Detail: a flatter view, then a full turn. The object collision is off (the default): only the land moves the camera, so the camera can go into the building, and the spring arm keeps the desired distance.",
+  "setup": {
+    "stage": "Detail",
+    "place": {
+      "objectOfType": "MABuilding",
+      "offset": [
+        10,
+        0
+      ],
+      "heading": 270
+    },
+    "cursor": [
+      0.5,
+      0.6
+    ]
+  },
+  "steps": [
+    {
+      "drag": "middle",
+      "at": [
+        0.5,
+        0.6
+      ],
+      "right": 0,
+      "up": 150,
+      "seconds": 0.8,
+      "keepHeld": true
+    },
+    {
+      "move": {
+        "right": 1600,
+        "up": 0
+      },
+      "seconds": 4.0
+    },
+    {
+      "release": "middle"
+    },
+    {
+      "wait": 0.3
+    }
+  ],
+  "checks": [
+    {
+      "rule": "pivotFixed",
+      "pixels": 2
+    },
+    {
+      "rule": "desiredConstant",
+      "percent": 0.1
+    },
+    {
+      "rule": "cursorLock"
+    },
+    {
+      "rule": "aboveLand",
+      "metres": 0.5
+    },
+    {
+      "rule": "noJump"
+    },
+    {
+      "rule": "noInvariant"
+    },
+    {
+      "rule": "glideStops",
+      "seconds": 2.5
+    },
+    {
+      "rule": "event",
+      "kind": "pivot",
+      "contains": "(middle press)",
+      "min": 1,
+      "max": 1
+    },
+    {
+      "rule": "change",
+      "of": "heading",
+      "min": 60
+    },
+    {
+      "rule": "event",
+      "kind": "arm",
+      "contains": "arm hit 'obstacle'",
+      "max": 0,
+      "offlineOnly": true
+    }
+  ],
+  "offline": {
+    "world": "buildings",
+    "fps": [
+      30,
+      60,
+      144
+    ]
+  }
+}

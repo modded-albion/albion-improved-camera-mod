@@ -1,0 +1,59 @@
+{
+  "name": "reset-view",
+  "description": "After a turn, F5 flies to the north view of the game at the current zoom.",
+  "setup": {
+    "stage": "Production",
+    "cursor": [
+      0.5,
+      0.6
+    ]
+  },
+  "steps": [
+    {
+      "drag": "middle",
+      "at": [
+        0.5,
+        0.6
+      ],
+      "right": 300,
+      "up": 0,
+      "seconds": 0.8
+    },
+    {
+      "wait": 1.0
+    },
+    {
+      "hotkey": "F5"
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "checks": [
+    {
+      "rule": "aboveLand",
+      "metres": 0.5
+    },
+    {
+      "rule": "noJump"
+    },
+    {
+      "rule": "noInvariant"
+    },
+    {
+      "rule": "flew"
+    },
+    {
+      "rule": "glideStops",
+      "seconds": 2.0
+    }
+  ],
+  "offline": {
+    "world": "flat",
+    "fps": [
+      30,
+      60,
+      144
+    ]
+  }
+}

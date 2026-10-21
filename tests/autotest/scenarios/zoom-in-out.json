@@ -1,0 +1,56 @@
+{
+  "name": "zoom-in-out",
+  "description": "Six wheel notches in and six out at Production, with the cursor at the view centre, give the camera of the start.",
+  "setup": {
+    "stage": "Production",
+    "cursor": [
+      0.5,
+      0.5
+    ]
+  },
+  "steps": [
+    {
+      "wheel": 6,
+      "interval": 0.1
+    },
+    {
+      "wait": 1.5
+    },
+    {
+      "wheel": -6,
+      "interval": 0.1
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "checks": [
+    {
+      "rule": "aboveLand",
+      "metres": 0.5
+    },
+    {
+      "rule": "noJump"
+    },
+    {
+      "rule": "noInvariant"
+    },
+    {
+      "rule": "glideStops",
+      "seconds": 2.5
+    },
+    {
+      "rule": "returnsToStart",
+      "metres": 0.1,
+      "degrees": 0.2
+    }
+  ],
+  "offline": {
+    "world": "hills",
+    "fps": [
+      30,
+      60,
+      144
+    ]
+  }
+}

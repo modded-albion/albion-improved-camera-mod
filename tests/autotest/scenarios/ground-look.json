@@ -1,0 +1,81 @@
+{
+  "name": "ground-look",
+  "description": "Eight wheel notches in at Detail go into the ground range; a look up, a walk forward, then eight notches out.",
+  "setup": {
+    "stage": "Detail",
+    "cursor": [
+      0.5,
+      0.6
+    ]
+  },
+  "steps": [
+    {
+      "wheel": 8,
+      "interval": 0.12
+    },
+    {
+      "wait": 1.5
+    },
+    {
+      "drag": "middle",
+      "at": [
+        0.5,
+        0.6
+      ],
+      "right": 0,
+      "up": 150,
+      "seconds": 0.8
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "keys": [
+        "W",
+        "UpArrow"
+      ],
+      "seconds": 1.5
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "wheel": -8,
+      "interval": 0.12
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "checks": [
+    {
+      "rule": "aboveLand",
+      "metres": 0.5
+    },
+    {
+      "rule": "noJump"
+    },
+    {
+      "rule": "noInvariant"
+    },
+    {
+      "rule": "ground"
+    },
+    {
+      "rule": "notInObstacle"
+    },
+    {
+      "rule": "glideStops",
+      "seconds": 3.0
+    }
+  ],
+  "endSeconds": 4.0,
+  "offline": {
+    "world": "hills",
+    "fps": [
+      30,
+      60,
+      144
+    ]
+  }
+}

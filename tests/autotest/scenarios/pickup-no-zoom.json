@@ -1,0 +1,72 @@
+{
+  "name": "pickup-no-zoom",
+  "description": "The hand takes an object at Detail (a press and a short drag on it): the camera does not zoom out.",
+  "setup": {
+    "stage": "Detail",
+    "cursor": [
+      0.5,
+      0.6
+    ],
+    "holdObject": "Wood",
+    "settleSeconds": 2.0
+  },
+  "steps": [
+    {
+      "press": "left",
+      "at": [
+        0.5,
+        0.6
+      ]
+    },
+    {
+      "move": {
+        "right": 0,
+        "up": 40
+      },
+      "seconds": 0.3
+    },
+    {
+      "wait": 1.2
+    },
+    {
+      "release": "left"
+    },
+    {
+      "wait": 0.5
+    }
+  ],
+  "checks": [
+    {
+      "rule": "aboveLand",
+      "metres": 0.5
+    },
+    {
+      "rule": "noJump"
+    },
+    {
+      "rule": "noInvariant"
+    },
+    {
+      "rule": "holdsObject"
+    },
+    {
+      "rule": "change",
+      "of": "stage",
+      "min": -0.01,
+      "max": 0.01
+    },
+    {
+      "rule": "change",
+      "of": "camera",
+      "max": 0.5
+    }
+  ],
+  "offline": {
+    "world": "flat",
+    "fps": [
+      30,
+      60,
+      144
+    ]
+  }
+}

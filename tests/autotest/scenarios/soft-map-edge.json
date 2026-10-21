@@ -1,0 +1,58 @@
+{
+  "name": "soft-map-edge",
+  "description": "A key pan to the edge of the map slows down and stops at the edge with no jump.",
+  "setup": {
+    "stage": "Production",
+    "place": {
+      "mapEdge": {
+        "inset": 40
+      }
+    },
+    "cursor": [
+      0.5,
+      0.6
+    ]
+  },
+  "steps": [
+    {
+      "keys": [
+        "W",
+        "UpArrow"
+      ],
+      "seconds": 3.0
+    },
+    {
+      "wait": 0.5
+    }
+  ],
+  "checks": [
+    {
+      "rule": "aboveLand",
+      "metres": 0.5
+    },
+    {
+      "rule": "noJump"
+    },
+    {
+      "rule": "noInvariant"
+    },
+    {
+      "rule": "glideStops",
+      "seconds": 3.0
+    },
+    {
+      "rule": "change",
+      "of": "camera",
+      "min": 1
+    }
+  ],
+  "endSeconds": 4.0,
+  "offline": {
+    "world": "mapEdge",
+    "fps": [
+      30,
+      60,
+      144
+    ]
+  }
+}

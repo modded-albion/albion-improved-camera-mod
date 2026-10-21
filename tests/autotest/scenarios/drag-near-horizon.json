@@ -1,0 +1,57 @@
+{
+  "name": "drag-near-horizon",
+  "description": "At Detail a fast right drag from just under the horizon to the sky. The land grip limits the move of the land for each pixel, and the chase limits the speed: the camera does not leap.",
+  "setup": {
+    "stage": "Detail",
+    "cursor": [
+      0.5,
+      0.22
+    ]
+  },
+  "steps": [
+    {
+      "drag": "right",
+      "at": [
+        0.5,
+        0.22
+      ],
+      "right": 0,
+      "up": 300,
+      "seconds": 0.3
+    }
+  ],
+  "checks": [
+    {
+      "rule": "maxSpeed",
+      "max": 200
+    },
+    {
+      "rule": "change",
+      "of": "camera",
+      "max": 80
+    },
+    {
+      "rule": "aboveLand",
+      "metres": 0.5
+    },
+    {
+      "rule": "noJump"
+    },
+    {
+      "rule": "noInvariant"
+    },
+    {
+      "rule": "glideStops",
+      "seconds": 3.0
+    }
+  ],
+  "endSeconds": 5.0,
+  "offline": {
+    "world": "flat",
+    "fps": [
+      30,
+      60,
+      144
+    ]
+  }
+}

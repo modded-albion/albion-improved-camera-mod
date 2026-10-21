@@ -1,0 +1,89 @@
+{
+  "name": "pitch-up-map-edge",
+  "description": "Run 10: near the edge of the map, a pitch up into the look up and a turn keep the desired distance.",
+  "setup": {
+    "stage": "Detail",
+    "place": {
+      "mapEdge": {
+        "inset": 60
+      }
+    },
+    "cursor": [
+      0.5,
+      0.6
+    ]
+  },
+  "steps": [
+    {
+      "drag": "middle",
+      "at": [
+        0.5,
+        0.6
+      ],
+      "right": 0,
+      "up": 450,
+      "seconds": 1.5,
+      "keepHeld": true
+    },
+    {
+      "move": {
+        "right": 600,
+        "up": 0
+      },
+      "seconds": 2.0
+    },
+    {
+      "release": "middle"
+    },
+    {
+      "wait": 0.3
+    }
+  ],
+  "checks": [
+    {
+      "rule": "pivotFixed",
+      "pixels": 2
+    },
+    {
+      "rule": "desiredConstant",
+      "percent": 0.1
+    },
+    {
+      "rule": "cursorLock"
+    },
+    {
+      "rule": "aboveLand",
+      "metres": 0.5
+    },
+    {
+      "rule": "noJump"
+    },
+    {
+      "rule": "noInvariant"
+    },
+    {
+      "rule": "glideStops",
+      "seconds": 2.5
+    },
+    {
+      "rule": "event",
+      "kind": "pivot",
+      "contains": "(middle press)",
+      "min": 1,
+      "max": 1
+    },
+    {
+      "rule": "change",
+      "of": "raise",
+      "min": 10
+    }
+  ],
+  "offline": {
+    "world": "mapEdge",
+    "fps": [
+      30,
+      60,
+      144
+    ]
+  }
+}

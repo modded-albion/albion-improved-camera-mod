@@ -1,0 +1,67 @@
+{
+  "name": "camera-spot",
+  "description": "Ctrl+F4 saves the view in spot 4; a land drag moves the camera; F4 flies back to the saved view.",
+  "setup": {
+    "stage": "Production",
+    "cursor": [
+      0.5,
+      0.6
+    ]
+  },
+  "steps": [
+    {
+      "hotkey": "Ctrl+F4"
+    },
+    {
+      "drag": "right",
+      "at": [
+        0.5,
+        0.6
+      ],
+      "right": 250,
+      "up": -150,
+      "seconds": 0.5
+    },
+    {
+      "wait": 2.0
+    },
+    {
+      "hotkey": "F4"
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "checks": [
+    {
+      "rule": "aboveLand",
+      "metres": 0.5
+    },
+    {
+      "rule": "noJump"
+    },
+    {
+      "rule": "noInvariant"
+    },
+    {
+      "rule": "flew"
+    },
+    {
+      "rule": "glideStops",
+      "seconds": 2.0
+    },
+    {
+      "rule": "returnsToStart",
+      "metres": 0.05,
+      "degrees": 0.2
+    }
+  ],
+  "offline": {
+    "world": "flat",
+    "fps": [
+      30,
+      60,
+      144
+    ]
+  }
+}

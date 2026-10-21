@@ -1,0 +1,65 @@
+{
+  "name": "key-pan-chase",
+  "description": "At Production, 60 m past a building with the building behind, a key pan forward for 1.5 s: the camera starts and stops smoothly, with no move back, and stops. The place does not depend on the scenario before it.",
+  "setup": {
+    "stage": "Production",
+    "cursor": [
+      0.5,
+      0.6
+    ],
+    "place": {
+      "objectOfType": "MABuilding",
+      "offset": [
+        60,
+        0
+      ],
+      "heading": 90
+    }
+  },
+  "steps": [
+    {
+      "keys": [
+        "W"
+      ],
+      "seconds": 1.5
+    },
+    {
+      "wait": 0.2
+    }
+  ],
+  "checks": [
+    {
+      "rule": "maxAcceleration",
+      "max": 400,
+      "offlineOnly": true
+    },
+    {
+      "rule": "change",
+      "of": "camera",
+      "min": 20
+    },
+    {
+      "rule": "aboveLand",
+      "metres": 0.5
+    },
+    {
+      "rule": "noJump"
+    },
+    {
+      "rule": "noInvariant"
+    },
+    {
+      "rule": "glideStops",
+      "seconds": 3.0
+    }
+  ],
+  "endSeconds": 4.0,
+  "offline": {
+    "world": "buildings",
+    "fps": [
+      30,
+      60,
+      144
+    ]
+  }
+}

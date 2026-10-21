@@ -1,0 +1,59 @@
+{
+  "name": "fade-building-near",
+  "description": "At Detail the focus is 13 m past the first MABuilding, so the camera is at the building, nearer than the fade distance: the building fades (or is hidden if the camera is in it). A zoom out to Production takes the camera away, and the building is solid again at the end.",
+  "setup": {
+    "stage": "Detail",
+    "place": {
+      "objectOfType": "MABuilding",
+      "offset": [
+        -13,
+        0
+      ],
+      "heading": 270
+    },
+    "cursor": [
+      0.5,
+      0.6
+    ]
+  },
+  "steps": [
+    {
+      "wait": 2.0
+    },
+    {
+      "wheel": -4,
+      "interval": 0.12
+    },
+    {
+      "wait": 1.5
+    }
+  ],
+  "checks": [
+    {
+      "rule": "faded",
+      "min": 1
+    },
+    {
+      "rule": "fadeRestored"
+    },
+    {
+      "rule": "aboveLand",
+      "metres": 0.5
+    },
+    {
+      "rule": "noJump"
+    },
+    {
+      "rule": "noInvariant"
+    }
+  ],
+  "endSeconds": 3.0,
+  "offline": {
+    "world": "buildings",
+    "fps": [
+      30,
+      60,
+      144
+    ]
+  }
+}

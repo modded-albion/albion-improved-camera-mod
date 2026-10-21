@@ -1,0 +1,78 @@
+{
+  "name": "look-up-detail",
+  "description": "A middle drag up at Detail makes the view flat and then looks above the horizon.",
+  "setup": {
+    "stage": "Detail",
+    "cursor": [
+      0.5,
+      0.65
+    ]
+  },
+  "steps": [
+    {
+      "drag": "middle",
+      "at": [
+        0.5,
+        0.65
+      ],
+      "right": 0,
+      "up": 450,
+      "seconds": 1.5
+    },
+    {
+      "wait": 0.3
+    }
+  ],
+  "checks": [
+    {
+      "rule": "pivotFixed",
+      "pixels": 2
+    },
+    {
+      "rule": "desiredConstant",
+      "percent": 0.1
+    },
+    {
+      "rule": "cursorLock"
+    },
+    {
+      "rule": "aboveLand",
+      "metres": 0.5
+    },
+    {
+      "rule": "noJump"
+    },
+    {
+      "rule": "noInvariant"
+    },
+    {
+      "rule": "glideStops",
+      "seconds": 2.5
+    },
+    {
+      "rule": "event",
+      "kind": "pivot",
+      "contains": "(middle press)",
+      "min": 1,
+      "max": 1
+    },
+    {
+      "rule": "change",
+      "of": "raise",
+      "min": 15
+    },
+    {
+      "rule": "change",
+      "of": "pitch",
+      "max": -10
+    }
+  ],
+  "offline": {
+    "world": "flat",
+    "fps": [
+      30,
+      60,
+      144
+    ]
+  }
+}

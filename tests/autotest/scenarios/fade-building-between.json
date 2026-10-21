@@ -1,0 +1,58 @@
+{
+  "name": "fade-building-between",
+  "description": "At Production the camera is behind a building (the focus 13 m past the first MABuilding, so the building is between the camera and the hand on the land), far from it: the building does not fade, because only an object near the camera fades. A key pan to the side follows.",
+  "setup": {
+    "stage": "Production",
+    "place": {
+      "objectOfType": "MABuilding",
+      "offset": [
+        -13,
+        0
+      ],
+      "heading": 270
+    },
+    "cursor": [
+      0.5,
+      0.6
+    ]
+  },
+  "steps": [
+    {
+      "wait": 2.5
+    },
+    {
+      "keys": [
+        "D"
+      ],
+      "seconds": 0.6
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "checks": [
+    {
+      "rule": "faded",
+      "max": 0
+    },
+    {
+      "rule": "aboveLand",
+      "metres": 0.5
+    },
+    {
+      "rule": "noJump"
+    },
+    {
+      "rule": "noInvariant"
+    }
+  ],
+  "endSeconds": 3.0,
+  "offline": {
+    "world": "buildings",
+    "fps": [
+      30,
+      60,
+      144
+    ]
+  }
+}

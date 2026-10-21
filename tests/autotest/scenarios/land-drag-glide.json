@@ -1,0 +1,58 @@
+{
+  "name": "land-drag-glide",
+  "description": "A right drag grabs the land and moves the camera; after the release the camera glides and stops.",
+  "setup": {
+    "stage": "Production",
+    "cursor": [
+      0.5,
+      0.6
+    ]
+  },
+  "steps": [
+    {
+      "drag": "right",
+      "at": [
+        0.5,
+        0.6
+      ],
+      "right": 0,
+      "up": -200,
+      "seconds": 0.5
+    }
+  ],
+  "checks": [
+    {
+      "rule": "aboveLand",
+      "metres": 0.5
+    },
+    {
+      "rule": "noJump"
+    },
+    {
+      "rule": "noInvariant"
+    },
+    {
+      "rule": "glideStops",
+      "seconds": 3.0
+    },
+    {
+      "rule": "change",
+      "of": "camera",
+      "min": 3
+    },
+    {
+      "rule": "change",
+      "of": "heading",
+      "max": 0.5
+    }
+  ],
+  "endSeconds": 5.0,
+  "offline": {
+    "world": "flat",
+    "fps": [
+      30,
+      60,
+      144
+    ]
+  }
+}

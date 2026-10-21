@@ -1,0 +1,79 @@
+{
+  "name": "stand-back-hand-back",
+  "description": "A pitch at Production, then the game blends its camera to a new view (BlendCameraTo), and the camera mod stands back. At the return the hand rig starts from the state of the game (focus, heading, stage and the tilt of the stage), not from the camera of the blend: the raise of the user is zero again and the camera does not jump.",
+  "setup": {
+    "stage": "Production",
+    "cursor": [
+      0.5,
+      0.6
+    ]
+  },
+  "steps": [
+    {
+      "drag": "middle",
+      "at": [
+        0.5,
+        0.6
+      ],
+      "right": 0,
+      "up": 120,
+      "seconds": 0.6
+    },
+    {
+      "wait": 0.5
+    },
+    {
+      "blend": {
+        "seconds": 1.5,
+        "forward": 40,
+        "turn": 45
+      }
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "checks": [
+    {
+      "rule": "aboveLand",
+      "metres": 0.5
+    },
+    {
+      "rule": "noJump"
+    },
+    {
+      "rule": "noInvariant"
+    },
+    {
+      "rule": "glideStops",
+      "seconds": 2.5
+    },
+    {
+      "rule": "event",
+      "kind": "stand-back",
+      "contains": "hand-back from the state of the game",
+      "min": 1,
+      "max": 1
+    },
+    {
+      "rule": "change",
+      "of": "raise",
+      "min": -0.5,
+      "max": 0.5
+    },
+    {
+      "rule": "change",
+      "of": "heading",
+      "min": 40,
+      "max": 50
+    }
+  ],
+  "offline": {
+    "world": "flat",
+    "fps": [
+      30,
+      60,
+      144
+    ]
+  }
+}

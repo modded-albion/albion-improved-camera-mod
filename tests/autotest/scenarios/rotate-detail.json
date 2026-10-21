@@ -1,0 +1,73 @@
+{
+  "name": "rotate-detail",
+  "description": "A horizontal middle drag at Detail turns the camera about the land under the hand.",
+  "setup": {
+    "stage": "Detail",
+    "cursor": [
+      0.5,
+      0.6
+    ]
+  },
+  "steps": [
+    {
+      "drag": "middle",
+      "at": [
+        0.5,
+        0.6
+      ],
+      "right": 400,
+      "up": 0,
+      "seconds": 1.5
+    },
+    {
+      "wait": 0.3
+    }
+  ],
+  "checks": [
+    {
+      "rule": "pivotFixed",
+      "pixels": 2
+    },
+    {
+      "rule": "desiredConstant",
+      "percent": 0.1
+    },
+    {
+      "rule": "cursorLock"
+    },
+    {
+      "rule": "aboveLand",
+      "metres": 0.5
+    },
+    {
+      "rule": "noJump"
+    },
+    {
+      "rule": "noInvariant"
+    },
+    {
+      "rule": "glideStops",
+      "seconds": 2.5
+    },
+    {
+      "rule": "event",
+      "kind": "pivot",
+      "contains": "(middle press)",
+      "min": 1,
+      "max": 1
+    },
+    {
+      "rule": "change",
+      "of": "heading",
+      "min": 10
+    }
+  ],
+  "offline": {
+    "world": "hills",
+    "fps": [
+      30,
+      60,
+      144
+    ]
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "name": "camera-beside-slope",
+  "description": "At Detail at the foot of the steepest land: a flatter view, then a quarter turn so that the slope is beside the camera, then no input. The ball of points around the camera pushes it out of the slope along the land normal, the push eases, and the camera then stops (no shake).",
+  "setup": {
+    "stage": "Detail",
+    "place": {
+      "steepest": {
+        "radius": 120,
+        "step": 4
+      }
+    },
+    "cursor": [
+      0.5,
+      0.6
+    ]
+  },
+  "steps": [
+    {
+      "drag": "middle",
+      "at": [
+        0.5,
+        0.6
+      ],
+      "right": 0,
+      "up": 150,
+      "seconds": 0.8,
+      "keepHeld": true
+    },
+    {
+      "move": {
+        "right": 820,
+        "up": 0
+      },
+      "seconds": 1.5
+    },
+    {
+      "release": "middle"
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "checks": [
+    {
+      "rule": "aboveLand",
+      "metres": 0.5
+    },
+    {
+      "rule": "noJump"
+    },
+    {
+      "rule": "noInvariant"
+    },
+    {
+      "rule": "glideStops",
+      "seconds": 2.5
+    },
+    {
+      "rule": "pivotFixed",
+      "pixels": 2
+    },
+    {
+      "rule": "desiredConstant",
+      "percent": 0.1
+    },
+    {
+      "rule": "cursorLock"
+    },
+    {
+      "rule": "change",
+      "of": "heading",
+      "min": 30
+    }
+  ],
+  "offline": {
+    "world": "cliff",
+    "fps": [
+      30,
+      60,
+      144
+    ]
+  }
+}

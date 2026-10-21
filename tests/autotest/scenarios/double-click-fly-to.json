@@ -1,0 +1,55 @@
+{
+  "name": "double-click-fly-to",
+  "description": "A double click on the land flies the clicked point to the view centre.",
+  "setup": {
+    "stage": "Production",
+    "cursor": [
+      0.65,
+      0.55
+    ]
+  },
+  "steps": [
+    {
+      "doubleClick": "left",
+      "at": [
+        0.65,
+        0.55
+      ]
+    },
+    {
+      "wait": 1.0
+    }
+  ],
+  "checks": [
+    {
+      "rule": "aboveLand",
+      "metres": 0.5
+    },
+    {
+      "rule": "noJump"
+    },
+    {
+      "rule": "noInvariant"
+    },
+    {
+      "rule": "flew"
+    },
+    {
+      "rule": "glideStops",
+      "seconds": 2.0
+    },
+    {
+      "rule": "change",
+      "of": "camera",
+      "min": 2
+    }
+  ],
+  "offline": {
+    "world": "flat",
+    "fps": [
+      30,
+      60,
+      144
+    ]
+  }
+}
