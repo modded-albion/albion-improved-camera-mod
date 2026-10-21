@@ -28,36 +28,36 @@ add_subdirectory(external/common)
 # the spring arm, the ground look, the navigation, the fade rules, the trace and the settings.
 add_library(
   moa_camera_core STATIC
-  src/core/include/moa_mod/camera/CameraBlackBox.h
-  src/core/include/moa_mod/camera/CameraChase.h
-  src/core/include/moa_mod/camera/CameraDrag.h
-  src/core/include/moa_mod/camera/CameraEvents.h
-  src/core/include/moa_mod/camera/CameraFade.h
-  src/core/include/moa_mod/camera/CameraFeel.h
-  src/core/include/moa_mod/camera/CameraGround.h
-  src/core/include/moa_mod/camera/CameraInertia.h
-  src/core/include/moa_mod/camera/CameraLand.h
-  src/core/include/moa_mod/camera/CameraLoop.h
-  src/core/include/moa_mod/camera/CameraNav.h
-  src/core/include/moa_mod/camera/CameraPitch.h
-  src/core/include/moa_mod/camera/CameraPivot.h
-  src/core/include/moa_mod/camera/CameraSettings.h
-  src/core/include/moa_mod/camera/CameraTrace.h
-  src/core/include/moa_mod/camera/HandRig.h
-  src/core/include/moa_mod/camera/MouseButtons.h
-  src/core/src/camera/CameraBlackBox.cpp
-  src/core/src/camera/CameraEvents.cpp
-  src/core/src/camera/CameraFade.cpp
-  src/core/src/camera/CameraLoop.cpp
-  src/core/src/camera/CameraLoopChase.cpp
-  src/core/src/camera/CameraLoopGround.cpp
-  src/core/src/camera/CameraLoopHand.cpp
-  src/core/src/camera/CameraLoopNav.cpp
-  src/core/src/camera/CameraNav.cpp
-  src/core/src/camera/CameraSettings.cpp
-  src/core/src/camera/CameraTrace.cpp
+  src/core/moa_mod/camera/CameraBlackBox.h
+  src/core/moa_mod/camera/CameraChase.h
+  src/core/moa_mod/camera/CameraDrag.h
+  src/core/moa_mod/camera/CameraEvents.h
+  src/core/moa_mod/camera/CameraFade.h
+  src/core/moa_mod/camera/CameraFeel.h
+  src/core/moa_mod/camera/CameraGround.h
+  src/core/moa_mod/camera/CameraInertia.h
+  src/core/moa_mod/camera/CameraLand.h
+  src/core/moa_mod/camera/CameraLoop.h
+  src/core/moa_mod/camera/CameraNav.h
+  src/core/moa_mod/camera/CameraPitch.h
+  src/core/moa_mod/camera/CameraPivot.h
+  src/core/moa_mod/camera/CameraSettings.h
+  src/core/moa_mod/camera/CameraTrace.h
+  src/core/moa_mod/camera/HandRig.h
+  src/core/moa_mod/camera/MouseButtons.h
+  src/core/moa_mod/camera/CameraBlackBox.cpp
+  src/core/moa_mod/camera/CameraEvents.cpp
+  src/core/moa_mod/camera/CameraFade.cpp
+  src/core/moa_mod/camera/CameraLoop.cpp
+  src/core/moa_mod/camera/CameraLoopChase.cpp
+  src/core/moa_mod/camera/CameraLoopGround.cpp
+  src/core/moa_mod/camera/CameraLoopHand.cpp
+  src/core/moa_mod/camera/CameraLoopNav.cpp
+  src/core/moa_mod/camera/CameraNav.cpp
+  src/core/moa_mod/camera/CameraSettings.cpp
+  src/core/moa_mod/camera/CameraTrace.cpp
 )
-target_include_directories(moa_camera_core PUBLIC src/core/include)
+target_include_directories(moa_camera_core PUBLIC src/core)
 target_link_libraries(moa_camera_core PUBLIC moa_common moa_mod_core)
 moa_set_warnings(moa_camera_core)
 

@@ -4,14 +4,14 @@ find_package(GTest CONFIG REQUIRED)
 # virtual input are only for these tests: the mod DLL does not have them.
 add_library(
   moa_camera_autotest STATIC
-  support/include/moa_mod/autotest/Scenario.h
-  support/include/moa_mod/autotest/ScenarioRunner.h
-  support/include/moa_mod/autotest/VirtualInput.h
-  support/src/Scenario.cpp
-  support/src/ScenarioRunner.cpp
-  support/src/VirtualInput.cpp
+  support/moa_mod/autotest/Scenario.h
+  support/moa_mod/autotest/ScenarioRunner.h
+  support/moa_mod/autotest/VirtualInput.h
+  support/moa_mod/autotest/Scenario.cpp
+  support/moa_mod/autotest/ScenarioRunner.cpp
+  support/moa_mod/autotest/VirtualInput.cpp
 )
-target_include_directories(moa_camera_autotest PUBLIC support/include)
+target_include_directories(moa_camera_autotest PUBLIC support)
 target_link_libraries(moa_camera_autotest PUBLIC moa_camera_core)
 moa_set_warnings(moa_camera_autotest)
 
