@@ -32,6 +32,15 @@ The DLL exports `MoaModApiVersion`, `MoaModGetInfo` (id `improved_camera`), `Moa
 
 `MoaModShutdown` gives the objects of the fade back to the game, removes the render sample and closes the trace.
 
+When the loader has inspector queries, the mod also adds two queries (the inspector mod calls them; the loader runs
+them on the main thread). They are the camera queries of the research mod, with the same answers:
+
+- `camera.state`: the camera of the game and the state of the camera mod;
+- `camera.events`: the last events of the camera mod (parameter `count`, 50 if not given).
+
+The queries `autotest.*` of the research mod (the camera tests with the virtual input in the game) are not in this
+DLL, because the virtual input is only in the tests.
+
 Changes from the research mod:
 
 - The reset of the view uses `camera.northDegrees` (new, default 0). The research mod used `moon.northDegrees`, which
