@@ -444,9 +444,18 @@ struct HandBackResult
 	bool told = false;           ///< The loop told the return from the state of the game.
 };
 
-/// A pitch at stage 1, then a stand-back of half a second. In a cutscene the game moves the camera and turns it down;
-/// in a pause it does nothing. Then the mod is active again for `afterSeconds`.
-[[nodiscard]] HandBackResult StandBack(int rate, bool cutscene, bool flyBack, float afterSeconds)
+/// What the game does with its camera while the mod stands back.
+enum class GameDuringStandBack
+{
+	Nothing,  ///< A pause: the game does nothing.
+	Cutscene, ///< The game runs its camera, then moves the camera and turns it down.
+	MenuTurn, ///< The pause menu: the game turns its camera, but its state and the camera position do not change.
+};
+
+/// A pitch at stage 1, then a stand-back of half a second, with `during` in each frame of it. With `newSettings`, the
+/// settings change while the mod stands back. Then the mod is active again for `afterSeconds`.
+[[nodiscard]] HandBackResult StandBack(int rate, GameDuringStandBack during, bool flyBack, float afterSeconds,
+                                       bool newSettings = false)
 {
 	const auto deltaTime = 1.0f / static_cast<float>(rate);
 	auto settings = LandSettings();
@@ -471,14 +480,25 @@ struct HandBackResult
 	{
 		harness.seconds += deltaTime;
 		harness.loop.StandBack();
-		if (cutscene)
+		if (during == GameDuringStandBack::Cutscene)
 		{
 			// The game runs its camera, and the cutscene moves the camera and turns it 25 degrees down.
 			game.RunFrame(deltaTime);
 			game.transform.position = game.transform.position + WorldPoint {4.0f, -2.0f, 3.0f};
 			game.transform.rotation = Multiply(game.transform.rotation, PitchRotation(25.0f));
 		}
+		else if (during == GameDuringStandBack::MenuTurn)
+		{
+			// The game turns its camera 5 degrees, as the pause menu of the game does. The game does not run its frame.
+			game.transform.rotation = Multiply(game.transform.rotation, PitchRotation(5.0f));
+		}
 		game.EndFrame();
+		if (newSettings)
+		{
+			// The user changes a setting in the pause menu.
+			harness.loop.ApplySettings(settings);
+			newSettings = false;
+		}
 	}
 	RunFor(harness, afterSeconds, deltaTime);
 	const auto& trace = harness.loop.Trace();
@@ -508,7 +528,7 @@ TEST(CameraLand, AfterACutsceneTheCameraStartsFromTheStateOfTheGame)
 	for (const auto rate : k_Rates)
 	{
 		SCOPED_TRACE(std::to_string(rate) + " fps");
-		const auto result = StandBack(rate, true, false, 0.5f);
+		const auto result = StandBack(rate, GameDuringStandBack::Cutscene, false, 0.5f);
 		std::cout << rate << " fps: raise " << result.raiseBefore << " -> " << result.raiseAfter << " deg, pitch "
 		          << result.pitchAfter << " deg (stage tilt " << result.stageTilt << "), " << result.fromGameCamera
 		          << " m from the camera of the game" << std::endl;
@@ -526,9 +546,38 @@ TEST(CameraLand, AfterAPauseTheCameraKeepsTheViewOfTheUser)
 	for (const auto rate : k_Rates)
 	{
 		SCOPED_TRACE(std::to_string(rate) + " fps");
-		const auto result = StandBack(rate, false, false, 0.5f);
+		const auto result = StandBack(rate, GameDuringStandBack::Nothing, false, 0.5f);
 		EXPECT_FALSE(result.told);
 		EXPECT_NEAR(result.raiseAfter, result.raiseBefore, 1e-3f);
+		EXPECT_LT(result.fromBefore, 1e-3f);
+	}
+}
+
+TEST(CameraLand, AfterThePauseMenuTurnedTheCameraTheViewOfTheUserStays)
+{
+	// The game turns its camera in the pause menu, but its state stays the state that the rig wrote. The return does not
+	// start from the state of the game, so the camera does not move to the focus of the game.
+	for (const auto newSettings : {false, true})
+	{
+		for (const auto rate : k_Rates)
+		{
+			SCOPED_TRACE(std::to_string(rate) + " fps" + (newSettings ? ", new settings" : ""));
+			const auto result = StandBack(rate, GameDuringStandBack::MenuTurn, false, 0.5f, newSettings);
+			ASSERT_GT(std::abs(result.raiseBefore), 1.0f);
+			EXPECT_FALSE(result.told);
+			EXPECT_NEAR(result.raiseAfter, result.raiseBefore, 1e-3f);
+			EXPECT_LT(result.fromBefore, 1e-3f);
+		}
+	}
+}
+
+TEST(CameraLand, NewSettingsInAPauseKeepTheViewOfTheUser)
+{
+	for (const auto rate : k_Rates)
+	{
+		SCOPED_TRACE(std::to_string(rate) + " fps");
+		const auto result = StandBack(rate, GameDuringStandBack::Nothing, false, 0.5f, true);
+		EXPECT_FALSE(result.told);
 		EXPECT_LT(result.fromBefore, 1e-3f);
 	}
 }
@@ -538,7 +587,7 @@ TEST(CameraLand, WithTheSettingTheCameraFliesBackAfterACutscene)
 	for (const auto rate : k_Rates)
 	{
 		SCOPED_TRACE(std::to_string(rate) + " fps");
-		const auto result = StandBack(rate, true, true, 2.0f);
+		const auto result = StandBack(rate, GameDuringStandBack::Cutscene, true, 2.0f);
 		std::cout << rate << " fps: back within " << result.fromBefore << " m, raise " << result.raiseAfter << " deg (was "
 		          << result.raiseBefore << ")" << std::endl;
 		EXPECT_TRUE(result.told);

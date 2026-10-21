@@ -77,6 +77,21 @@ CameraLoop::CameraLoop(CameraSettings settings)
 {
 }
 
+void CameraLoop::ApplySettings(CameraSettings settings)
+{
+	CameraLoop next(settings);
+	if (_handBack)
+	{
+		// The mod stands back, for example in the pause menu. The new loop has the same return as the old loop, so it
+		// continues from the view of the user if nothing moved it.
+		next._handBack = true;
+		next._standBackCamera = _standBackCamera;
+		next._standBackSpot = settings.flyBackAfterStandBack ? _standBackSpot : std::nullopt;
+		next._gameStateWritten = _gameStateWritten;
+	}
+	*this = std::move(next);
+}
+
 void CameraLoop::StandBack()
 {
 	// The other camera code of the game starts from the camera that the user sees.

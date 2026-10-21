@@ -357,6 +357,9 @@ class CameraLoop
 public:
 	explicit CameraLoop(CameraSettings settings);
 
+	/// Use new settings. The loop starts again from the camera of the game, but it keeps the return from a stand-back:
+	/// a change of the settings in the pause menu does not move the view of the user.
+	void ApplySettings(CameraSettings settings);
 	/// The mod stands back in this frame. The next active frame starts again from the camera of the game.
 	void StandBack();
 	/// Start again from the camera of the game in the next frame.
@@ -530,6 +533,8 @@ private:
 	/// Start the hand rig from the state of the game (focus, heading, stage and the tilt of the stage), not from the
 	/// camera transform.
 	void ResyncFromGameState(CameraGame& game);
+	/// True if the game still has the town camera state that the rig wrote last.
+	[[nodiscard]] bool GameStateKept(const CameraGame& game) const;
 	/// The state of the game that places the camera of the game at `camera`. The focus is at most `reachLimit` away.
 	[[nodiscard]] GameCameraState GameStateFor(WorldPoint camera, std::optional<float> reachLimit = {}) const;
 	void StopGameCollisions(CameraGame& game);
@@ -764,7 +769,18 @@ private:
 	/// The camera that the mod wrote before the stand-back. If the camera is still there at the return, nothing moved it.
 	std::optional<CameraPlacement> _standBackCamera;
 	std::optional<CameraSpot> _standBackSpot; ///< The view of the user before the stand-back.
-	bool _groundCollisionsFailed = false;     ///< The loop cannot stop the push of the game, so there is no ground range.
+	/// The town camera state of the game, as the game had it after the last write of the rig.
+	struct WrittenGameState
+	{
+		WorldPoint focus;
+		float direction = 0.0f; ///< Degrees.
+		float stage = 0.0f;
+		StageView view;
+	};
+	/// The state that the rig wrote last. If the game still has it at the return, the game did not move the view of the
+	/// user while the mod stood back.
+	std::optional<WrittenGameState> _gameStateWritten;
+	bool _groundCollisionsFailed = false; ///< The loop cannot stop the push of the game, so there is no ground range.
 };
 
 } // namespace moa_mod::camera

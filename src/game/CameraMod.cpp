@@ -1101,8 +1101,8 @@ void CameraMod::ApplySettings(const CameraSettings& settings)
 {
 	RestoreFade();
 	_settings = settings;
-	// A new loop has no state of the old settings, and starts again from the camera of the game.
-	_loop = CameraLoop(settings);
+	// The loop has no state of the old settings, and starts again from the camera of the game.
+	_loop.ApplySettings(settings);
 }
 
 void CameraMod::StandBack(const std::string& reason)

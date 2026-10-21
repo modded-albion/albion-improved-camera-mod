@@ -174,8 +174,13 @@ bool CameraLoop::ResyncHand(CameraGame& game)
 	const auto handBack = std::exchange(_handBack, false);
 	const auto standBackCamera = std::exchange(_standBackCamera, std::nullopt);
 	const auto standBackSpot = std::exchange(_standBackSpot, std::nullopt);
-	const auto movedByGame = handBack && !(standBackCamera && SamePlacement(*camera, *standBackCamera));
-	if (ResumeGround(*camera))
+	// In the pause menu the game turns its camera to its focus again, but it does not change its state. The state is
+	// then the state that the rig wrote, and the view of the user did not change. The focus of a flat view is far away
+	// on the line of the heading, so a start from the state of the game moves the camera to that far focus.
+	const auto stateKept = handBack && standBackCamera && GameStateKept(game);
+	const auto movedByGame = handBack && !(standBackCamera && (stateKept || SamePlacement(*camera, *standBackCamera)));
+	const auto start = stateKept ? *standBackCamera : *camera;
+	if (ResumeGround(start))
 	{
 		ResetArm();
 		_pivot.reset();
@@ -203,8 +208,8 @@ bool CameraLoop::ResyncHand(CameraGame& game)
 	}
 	else
 	{
-		const auto pitch = PitchOf(camera->rotation);
-		_rig = HandRigPose {.position = camera->position, .yaw = game.Direction(), .pitch = pitch};
+		const auto pitch = PitchOf(start.rotation);
+		_rig = HandRigPose {.position = start.position, .yaw = game.Direction(), .pitch = pitch};
 		// Start from the tilt of the camera of the game. The raise is the difference from the tilt of the stage row.
 		_pitchTarget = StageTiltOf(stage) - pitch;
 	}
@@ -236,6 +241,20 @@ void CameraLoop::ResyncFromGameState(CameraGame& game)
 	_rig = HandRigPose {
 	    .position = game.Focus() + GameCameraOffset(direction, StageHeightOf(stage), tilt), .yaw = direction, .pitch = tilt};
 	_pitchTarget = 0.0f;
+}
+
+bool CameraLoop::GameStateKept(const CameraGame& game) const
+{
+	if (!_gameStateWritten)
+	{
+		return false;
+	}
+	const auto& written = *_gameStateWritten;
+	return Length(game.Focus() - written.focus) <= k_PlacementTolerance &&
+	       std::abs(WrapDegrees(game.Direction() - written.direction)) <= k_TurnTolerance &&
+	       std::abs(game.Stage() - written.stage) <= k_StageTolerance &&
+	       std::abs(game.StageHeight() - written.view.height) <= k_PlacementTolerance &&
+	       std::abs(game.StageTilt() - written.view.tilt) <= k_TurnTolerance;
 }
 
 bool CameraLoop::BeforeHand(CameraGame& game)
@@ -1131,6 +1150,10 @@ bool CameraLoop::WriteHandState(CameraGame& game, WorldPoint shake, Quaternion s
 	}
 	_written = shown;
 	_shown = shown.position;
+	_gameStateWritten = WrittenGameState {.focus = game.Focus(),
+	                                      .direction = game.Direction(),
+	                                      .stage = game.Stage(),
+	                                      .view = {.height = game.StageHeight(), .tilt = game.StageTilt()}};
 	_trace.writtenFocus = _focusWritten;
 	_trace.writtenCamera = shown;
 	return true;
