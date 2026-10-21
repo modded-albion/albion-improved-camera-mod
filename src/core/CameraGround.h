@@ -45,8 +45,8 @@ constexpr float k_GroundStages = 1.0f;
 /// The limits of the view of a camera that stands on the land, degrees.
 struct GroundViewLimits
 {
-	float down = 60.0f; ///< The largest angle of the view centre below the horizon.
-	float up = 60.0f;   ///< The largest angle of the view centre above the horizon.
+	float down = 60.0f;                ///< The largest angle of the view centre below the horizon.
+	float up = k_HighestLookUpDegrees; ///< The largest angle of the view centre above the horizon.
 };
 
 /// Return the range of the raise in the ground range. At the top of the range it is the range of the closest stage

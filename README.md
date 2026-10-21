@@ -7,9 +7,9 @@ moved into its own DLL. That repository stays as it is.
 What it does, when `camera.enabled` is true in mods.json:
 
 - The camera turns about the hand, and the zoom and the turn are smooth (with glides after a drag, a turn or a pitch).
-- The hand rig: the pitch with the middle mouse button (modes `hand`, `inPlace`, `orbit`), the look up near the land,
-  the spring arm that keeps the camera in front of the land and the objects, the land grip, the chase of the camera,
-  the soft edge of the map, the fly-to on a double click, and the ground look below the closest zoom stage.
+- The hand rig: the pitch with the middle mouse button (modes `hand`, `inPlace`, `orbit`), the look up to a view
+  straight up, the spring arm that keeps the camera in front of the land and the objects, the land grip, the chase of the
+  camera, the soft edge of the map, the fly-to on a double click, and the ground look below the closest zoom stage.
 - The objects near the camera become see-through, and an object that the camera is in is hidden.
 - Four camera spots for each save (`%LOCALAPPDATA%\MastersOfAlbionReforged\camera-spots.json`) and the reset of the
   view with the north at the top.

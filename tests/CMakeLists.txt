@@ -29,6 +29,7 @@ add_executable(
   test_CameraGround.cpp
   test_CameraHandRig.cpp
   test_CameraLand.cpp
+  test_CameraLookUp.cpp
   test_CameraLoop.cpp
   test_CameraMaths.cpp
   test_CameraNav.cpp

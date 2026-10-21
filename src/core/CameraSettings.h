@@ -25,18 +25,18 @@ namespace moa_mod::camera
 struct CameraSettings
 {
 	bool enabled = false;
-	bool pivotOnHand = true;               ///< Turn the camera about the hand point, not about the focus.
-	bool smoothZoom = true;                ///< The mouse wheel moves a target stage; the stage follows it smoothly.
-	double zoomSmoothing = 0.3;            ///< Seconds for the zoom to get most of the way to its target.
-	double rotateSmoothing = 0.0;          ///< Seconds for the turn to get most of the way to its target. 0 is off.
-	double wheelZoomStep = 0.5;            ///< Zoom stages for each notch of the mouse wheel.
-	bool invertRotate = false;             ///< Turn about the hand in the opposite direction (the sign of the turn).
-	bool lookUp = false;                   ///< A vertical drag with the middle mouse button turns the view up near the ground.
-	double maxLookUpDegrees = 15.0;        ///< The highest angle of the view centre above the horizon.
-	double pitchSensitivity = 10.0;        ///< Degrees of look up for each 100 pixels of vertical drag.
-	double lookUpFullStage = 0.5;          ///< At this zoom stage and below, the full look up is permitted.
-	double lookUpZeroStage = 1.5;          ///< At this zoom stage and above, no look up is permitted.
-	bool invertPitch = false;              ///< A drag down turns the view up.
+	bool pivotOnHand = true;      ///< Turn the camera about the hand point, not about the focus.
+	bool smoothZoom = true;       ///< The mouse wheel moves a target stage; the stage follows it smoothly.
+	double zoomSmoothing = 0.3;   ///< Seconds for the zoom to get most of the way to its target.
+	double rotateSmoothing = 0.0; ///< Seconds for the turn to get most of the way to its target. 0 is off.
+	double wheelZoomStep = 0.5;   ///< Zoom stages for each notch of the mouse wheel.
+	bool invertRotate = false;    ///< Turn about the hand in the opposite direction (the sign of the turn).
+	bool lookUp = false;          ///< A vertical drag with the middle mouse button turns the view up above the horizon.
+	double maxLookUpDegrees = k_HighestLookUpDegrees; ///< The highest angle of the view centre above the horizon.
+	double pitchSensitivity = 10.0;                   ///< Degrees of look up for each 100 pixels of vertical drag.
+	double lookUpFullStage = 4.0;                     ///< At this zoom stage and below, the full look up is permitted.
+	double lookUpZeroStage = 5.0;                     ///< At this zoom stage and above, no look up is permitted.
+	bool invertPitch = false;                         ///< A drag down turns the view up.
 	bool pitch = false;                    ///< A vertical drag with the middle mouse button changes the tilt at each zoom.
 	double minTiltDegrees = 5.0;           ///< The flattest tilt of the pitch, degrees below the horizon.
 	double maxTiltDegrees = 85.0;          ///< The steepest tilt of the pitch, degrees below the horizon.
@@ -93,8 +93,9 @@ struct CameraSettings
 	bool groundLook = true;
 	double groundEyeHeight = 1.8;         ///< Metres above the land at the bottom of the ground range.
 	double groundPitchDownDegrees = 60.0; ///< On the land, the largest angle of the view centre below the horizon.
-	double groundPitchUpDegrees = 60.0;   ///< On the land, the largest angle of the view centre above the horizon.
-	double groundWalkSpeed = 4.0;         ///< The key pan on the land, metres for each second at the move speed 1.
+	/// On the land, the largest angle of the view centre above the horizon.
+	double groundPitchUpDegrees = k_HighestLookUpDegrees;
+	double groundWalkSpeed = 4.0; ///< The key pan on the land, metres for each second at the move speed 1.
 	/// The hand rig moves the camera that the user sees after the camera of the land drag, the key pan, the edge
 	/// scroll, the glide and the clamp into the map, with a spring that keeps the speed. This is the time in which
 	/// the camera covers 95 percent of a sudden move, seconds. 0 is off. Only the hand rig.

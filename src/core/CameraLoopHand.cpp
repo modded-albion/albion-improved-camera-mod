@@ -819,6 +819,15 @@ bool CameraLoop::AfterHand(CameraGame& game)
 			_pivotOnCursor = true;
 			_level = land->y;
 		}
+		else if (!_pivot && !endsInGround && _view.lookUp > 0.0f)
+		{
+			// The view looks up, so the focus of the game is far away on the line of the heading. The look up turns the
+			// camera about itself, and the rig below it turns about the pivot of the spring arm. The pivot is not farther
+			// than the limit, so the camera does not turn about a far point.
+			_pivotLimited = false;
+			_pivot = LimitPivot(rig.position, _armPivot.value_or(focus));
+			_pivotOnCursor = false;
+		}
 		else if (!_pivot)
 		{
 			// In the ground range the focus of the game can be far away. The pivot stays near the camera.
@@ -929,6 +938,13 @@ bool CameraLoop::AfterHand(CameraGame& game)
 	}
 	const auto clearance = static_cast<float>(_settings.groundClearance);
 	const auto keepAboveLand = !game.IgnoresCollisions();
+	// The look up turns the camera about its own position. Only the part of the pitch that is below the flattest tilt
+	// turns the camera about the pivot. Thus a view up does not move the camera below the pivot and into the land, at
+	// each zoom stage. The look up of the last frame comes from the pitch of the rig, so a start from the camera of the
+	// game and a change of the range do not turn the camera about the pivot.
+	const auto flattestTilt = stageTilt - _range.flattest;
+	const auto lookUpStep = _view.lookUp - std::max(flattestTilt - rig.pitch, 0.0f);
+	const auto orbitStep = pitchStep + lookUpStep;
 	if (pitchStep != 0.0f)
 	{
 		// A pitch that would put the camera into the land turns about the pivot only as far as the land permits. The
@@ -938,7 +954,7 @@ bool CameraLoop::AfterHand(CameraGame& game)
 		// exact land plus the clearance, as in the spring arm.
 		const auto start = ArmCamera();
 		auto permitted = [&](float part) -> std::optional<bool> {
-			const auto position = PitchAboutPivot(start, pivot, rig.yaw, pitchStep * part);
+			const auto position = PitchAboutPivot(start, pivot, rig.yaw, orbitStep * part);
 			auto ground = arm ? game.LandHeight(position) : game.HighestGround(position);
 			if (!ground)
 			{
@@ -971,9 +987,9 @@ bool CameraLoop::AfterHand(CameraGame& game)
 				part = low;
 			}
 		}
-		rig.position = PitchAboutPivot(rig.position, pivot, rig.yaw, pitchStep * part);
-		_trace.inPlaceTilt = pitchStep * (1.0f - part);
-		_trace.pivotKept = part >= 1.0f;
+		rig.position = PitchAboutPivot(rig.position, pivot, rig.yaw, orbitStep * part);
+		_trace.inPlaceTilt = pitchStep - orbitStep * part;
+		_trace.pivotKept = part >= 1.0f && lookUpStep == 0.0f;
 	}
 	rig.pitch = viewTilt;
 

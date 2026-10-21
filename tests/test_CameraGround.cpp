@@ -363,7 +363,8 @@ TEST(CameraGround, ALookUpShowsTheSkyAndTheCameraStaysInPlace)
 		}
 		harness.game.buttons[2] = false;
 		RunFor(harness, 1.0f, deltaTime);
-		EXPECT_NEAR(ViewElevation(harness), 60.0f, 0.1f) << rate;
+		// The default limit is a view straight up.
+		EXPECT_NEAR(ViewElevation(harness), k_HighestLookUpDegrees, 0.1f) << rate;
 		EXPECT_LT(Length(harness.game.transform.position - standing), 0.01f) << rate;
 		// And down to the limit below the horizon.
 		harness.game.buttons[2] = true;

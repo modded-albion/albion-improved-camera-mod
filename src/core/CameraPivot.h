@@ -181,13 +181,17 @@ struct ZoomSmoother
 	}
 };
 
-/// The limits of the look up near the ground. The game always points the town camera at the focus, down by the tilt
-/// of the zoom stage. The look up turns the camera up from that direction.
+/// The highest angle of the view centre above the horizon that the mod permits, degrees. The view stops just before
+/// straight up. Thus the heading of the camera stays defined, and the view does not turn over or spin.
+constexpr float k_HighestLookUpDegrees = 89.5f;
+
+/// The limits of the look up. The game always points the town camera at the focus, down by the tilt of the zoom stage.
+/// The look up turns the camera up from that direction.
 struct LookUpLimits
 {
-	float maxAboveHorizon = 15.0f; ///< The highest angle of the view centre above the horizon, degrees.
-	float fullStage = 0.5f;        ///< At this stage and below, the full look up is permitted.
-	float zeroStage = 1.5f;        ///< At this stage and above, no look up is permitted.
+	float maxAboveHorizon = k_HighestLookUpDegrees; ///< The highest angle of the view centre above the horizon, degrees.
+	float fullStage = 4.0f;                         ///< At this stage and below, the full look up is permitted.
+	float zeroStage = 5.0f;                         ///< At this stage and above, no look up is permitted.
 };
 
 /// Return the part of the look up that a stage permits: 1 at the full stage and below, 0 at the zero stage and

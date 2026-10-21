@@ -691,6 +691,11 @@ TEST(HandRigReplay, Run9PitchAndTurnDoNotPutTheCameraUnderTheMap)
 	settings.continuousZoom = true;
 	settings.panSpeed = 0.45;
 	settings.pitchSensitivity = 10.0;
+	// The look up of the run: at most 15 degrees, and only near the ground. With a higher look up, the same drags turn
+	// the view farther up, and the camera goes down to the level of the pivot.
+	settings.maxLookUpDegrees = 15.0;
+	settings.lookUpFullStage = 0.5;
+	settings.lookUpZeroStage = 1.5;
 	CameraLoopHarness harness(settings);
 	auto& game = harness.game;
 	game.screenWidth = 3840.0f;

@@ -140,6 +140,36 @@ TEST(CameraSettings, RefusesBadValues)
 	}
 }
 
+TEST(CameraSettings, TheLookUpGoesToStraightUp)
+{
+	// The defaults let the view centre go to 89.5 degrees above the horizon at each zoom stage of the game.
+	const CameraSettings defaults;
+	EXPECT_DOUBLE_EQ(defaults.maxLookUpDegrees, 89.5);
+	EXPECT_DOUBLE_EQ(defaults.groundPitchUpDegrees, 89.5);
+	EXPECT_DOUBLE_EQ(defaults.lookUpFullStage, 4.0);
+	EXPECT_DOUBLE_EQ(defaults.lookUpZeroStage, 5.0);
+	EXPECT_FLOAT_EQ(k_HighestLookUpDegrees, 89.5f);
+	// 89.5 is the highest value. A larger value makes the view turn over, so the file refuses it.
+	for (const auto* text : {R"({"maxLookUpDegrees": 89.5})", R"({"groundPitchUpDegrees": 89.5})",
+	                         R"({"maxLookUpDegrees": 15, "groundPitchUpDegrees": 60})"})
+	{
+		EXPECT_TRUE(Parse(text)) << text;
+	}
+	for (const auto* text : {R"({"maxLookUpDegrees": 89.6})", R"({"groundPitchUpDegrees": 89.6})",
+	                         R"({"maxLookUpDegrees": -1})", R"({"groundPitchUpDegrees": -1})"})
+	{
+		EXPECT_FALSE(Parse(text)) << text;
+	}
+	// The overlay menu has the same limits as the file.
+	EXPECT_DOUBLE_EQ(FieldOf("maxLookUpDegrees").max, 89.5);
+	EXPECT_DOUBLE_EQ(FieldOf("groundPitchUpDegrees").max, 89.5);
+	CameraSettings settings;
+	settings.maxLookUpDegrees = 15.0;
+	const auto edit = EditCameraField(settings, FieldOf("maxLookUpDegrees"), FieldValue {89.5});
+	ASSERT_TRUE(edit) << edit.GetError().message;
+	EXPECT_DOUBLE_EQ(settings.maxLookUpDegrees, 89.5);
+}
+
 TEST(CameraSettings, TheObjectReadsBackTheSame)
 {
 	CameraSettings settings;

@@ -238,18 +238,18 @@ const std::array k_Fields {
                            .section = "camera",
                            .key = "lookUp",
                            .label = "Look up on",
-                           .help = "A vertical drag turns the view up near the ground.",
+                           .help = "A vertical drag turns the view up above the horizon.",
                            MOA_TOGGLE(lookUp)},
     Field<CameraSettings> {.group = "Look up",
                            .section = "camera",
                            .key = "maxLookUpDegrees",
                            .label = "Max look up",
-                           .help = "The highest angle of the view centre above the horizon.",
+                           .help = "The highest angle of the view centre above the horizon. 89.5 is straight up.",
                            .kind = FieldKind::Number,
                            .min = 0.0,
-                           .max = 60.0,
-                           .step = 1.0,
-                           .format = "%.0f deg",
+                           .max = k_HighestLookUpDegrees,
+                           .step = 0.5,
+                           .format = "%.1f deg",
                            MOA_NUMBER(maxLookUpDegrees)},
     Field<CameraSettings> {.group = "Look up",
                            .section = "camera",
@@ -646,12 +646,12 @@ const std::array k_Fields {
                            .section = "camera",
                            .key = "groundPitchUpDegrees",
                            .label = "Look up limit",
-                           .help = "On the land, the largest angle of the view above the horizon.",
+                           .help = "On the land, the largest angle of the view above the horizon. 89.5 is straight up.",
                            .kind = FieldKind::Number,
                            .min = 0.0,
-                           .max = 89.0,
-                           .step = 1.0,
-                           .format = "%.0f deg",
+                           .max = k_HighestLookUpDegrees,
+                           .step = 0.5,
+                           .format = "%.1f deg",
                            MOA_NUMBER(groundPitchUpDegrees)},
     Field<CameraSettings> {.group = "Ground",
                            .section = "camera",
@@ -747,10 +747,10 @@ moa::Result<CameraSettings> ParseCameraSettings(const nlohmann::json& object)
 	{
 		return moa::MakeError("'wheelZoomStep' must be 0.01 to 4 stages");
 	}
-	if (value.maxLookUpDegrees < 0.0 || value.maxLookUpDegrees > 60.0 || value.pitchSensitivity < 0.1 ||
+	if (value.maxLookUpDegrees < 0.0 || value.maxLookUpDegrees > k_HighestLookUpDegrees || value.pitchSensitivity < 0.1 ||
 	    value.pitchSensitivity > 100.0)
 	{
-		return moa::MakeError("'maxLookUpDegrees' must be 0 to 60 and 'pitchSensitivity' 0.1 to 100");
+		return moa::MakeError("'maxLookUpDegrees' must be 0 to 89.5 and 'pitchSensitivity' 0.1 to 100");
 	}
 	if (value.lookUpFullStage < 0.0 || value.lookUpZeroStage > 5.0 || value.lookUpZeroStage <= value.lookUpFullStage)
 	{
@@ -815,9 +815,9 @@ moa::Result<CameraSettings> ParseCameraSettings(const nlohmann::json& object)
 		                      "each second");
 	}
 	if (value.groundPitchDownDegrees < 0.0 || value.groundPitchDownDegrees > 89.0 || value.groundPitchUpDegrees < 0.0 ||
-	    value.groundPitchUpDegrees > 89.0)
+	    value.groundPitchUpDegrees > k_HighestLookUpDegrees)
 	{
-		return moa::MakeError("'groundPitchDownDegrees' and 'groundPitchUpDegrees' must be 0 to 89");
+		return moa::MakeError("'groundPitchDownDegrees' must be 0 to 89 and 'groundPitchUpDegrees' 0 to 89.5");
 	}
 	if (value.chaseSeconds < 0.0 || value.chaseSeconds > 5.0 || value.chaseMaxSpeed <= 0.0 || value.chaseMaxSpeed > 1000.0 ||
 	    value.chaseMinSpeed <= 0.0 || value.chaseMinSpeed > 100000.0)
@@ -961,7 +961,7 @@ std::string CameraSummary(const CameraSettings& settings)
 	std::string text = std::format("Camera mod: {}\n", OnOff(c.enabled));
 	text += std::format("Pitch: {}, mode {}, tilt {:.0f} to {:.0f} deg\n", OnOff(c.pitch), PitchModeName(c.pitchMode),
 	                    c.minTiltDegrees, c.maxTiltDegrees);
-	text += std::format("Look up: {}, max {:.0f} deg, sensitivity {:.1f}\n", OnOff(c.lookUp), c.maxLookUpDegrees,
+	text += std::format("Look up: {}, max {:.1f} deg, sensitivity {:.1f}\n", OnOff(c.lookUp), c.maxLookUpDegrees,
 	                    c.pitchSensitivity);
 	text += std::format("Smoothing: zoom {:.2f} s, turn {:.2f} s, pitch {:.2f} s\n", c.zoomSmoothing, c.rotateSmoothing,
 	                    c.pitchSmoothing);
@@ -977,7 +977,7 @@ std::string CameraSummary(const CameraSettings& settings)
 	                    OnOff(c.edgeScroll), c.edgeMargin, OnOff(c.panAvoidance));
 	text += std::format("Fly to: {}, {:.2f} s, {}\n", OnOff(c.flyTo), c.flyToSeconds,
 	                    c.flyToStage < 0.0 ? std::string("keep the zoom") : std::format("stage {:.1f}", c.flyToStage));
-	text += std::format("Ground look: {}, eye {:.1f} m, view {:.0f} deg down to {:.0f} deg up, walk {:.1f} m/s\n",
+	text += std::format("Ground look: {}, eye {:.1f} m, view {:.0f} deg down to {:.1f} deg up, walk {:.1f} m/s\n",
 	                    OnOff(c.groundLook), c.groundEyeHeight, c.groundPitchDownDegrees, c.groundPitchUpDegrees,
 	                    c.groundWalkSpeed);
 	text += std::format("Chase: {:.2f} s, land grip {}, mouse smoothing {:.3f} s\n", c.chaseSeconds, OnOff(c.landGrip),
