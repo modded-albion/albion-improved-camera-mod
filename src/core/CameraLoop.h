@@ -439,6 +439,9 @@ private:
 	/// The land drag of the hand rig. Find the move of the target camera in this frame (`move`). Return false on an
 	/// error.
 	[[nodiscard]] bool StepGrip(CameraGame& game, bool rightHeld, bool rightPressed, WorldPoint& move);
+	/// The cursor for the land drag in this frame, screen pixels. Read it one time in each frame. Nothing if the game
+	/// does not give the cursor.
+	[[nodiscard]] std::optional<WorldPoint> GripCursor(CameraGame& game);
 	/// Move the camera that the user sees after the target camera in this frame. `targetMove` is the part of the move of
 	/// the target camera in this frame that the chase smooths.
 	void StepChase(CameraGame& game, WorldPoint targetMove);
@@ -748,15 +751,17 @@ private:
 		GripPlane plane;
 		float distance = 0.0f; ///< The distance from the camera to the focus at the grip, metres.
 		WorldPoint applied;    ///< The move of the target camera that the land drag made since the grip.
+		WorldPoint lastCursor; ///< The cursor in the last frame of the drag, pixels.
 	};
 	ChaseSpring _chase;
 	float _chaseSlowLeft = 0.0f; ///< While this time is left, the chase is two times slower: a limit moved the target.
 	bool _chaseMoving = false;   ///< The chase moved the camera in this frame.
 	bool _resyncing = false;     ///< The loop starts again from the camera of the game in this call.
 	std::optional<LandGrip> _grip;
-	bool _gripStarted = false; ///< The land drag took a new grip in this frame.
-	bool _gripRetake = false;  ///< The land drag takes a new grip in the next frame: the view turned or zoomed.
-	bool _gripRefused = false; ///< The press of the right button was on the UI: no land drag until the release.
+	bool _gripStarted = false;            ///< The land drag took a new grip in this frame.
+	bool _gripRetake = false;             ///< The land drag takes a new grip in the next frame: the view turned or zoomed.
+	std::optional<WorldPoint> _gripMouse; ///< The mouse of Unity when the land drag last read the cursor, pixels.
+	bool _gripRefused = false;            ///< The press of the right button was on the UI: no land drag until the release.
 	InputSmoother _turnInput;
 	InputSmoother _pitchInput;
 

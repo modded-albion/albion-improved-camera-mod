@@ -85,10 +85,27 @@ bool CameraLoop::KeepArmPivotOnLand(CameraGame& game)
 	return true;
 }
 
+std::optional<WorldPoint> CameraLoop::GripCursor(CameraGame& game)
+{
+	// The game sets its input position after the mod reads it, so in the mod it is the cursor of the last frame. When
+	// it is the mouse of Unity of the last frame, the land drag uses the mouse of Unity of this frame. Then the land
+	// stays under the cursor that the user sees, with no frame of delay. Another input (Steam Input) does not move the
+	// mouse of Unity, and the land drag uses the input position of the game.
+	auto input = game.InputPosition();
+	auto mouse = game.MousePosition();
+	const auto lastMouse = std::exchange(_gripMouse, mouse);
+	if (input && mouse && lastMouse && input->x == lastMouse->x && input->y == lastMouse->y)
+	{
+		return mouse;
+	}
+	return input;
+}
+
 bool CameraLoop::StepGrip(CameraGame& game, bool rightHeld, bool rightPressed, WorldPoint& move)
 {
 	move = {};
 	_gripStarted = false;
+	auto cursor = GripCursor(game);
 	if (!LandGripOn() || !rightHeld)
 	{
 		_grip.reset();
@@ -102,29 +119,31 @@ bool CameraLoop::StepGrip(CameraGame& game, bool rightHeld, bool rightPressed, W
 		auto hand = game.Hand();
 		_gripRefused = hand && hand->overUi;
 	}
-	if (_gripRefused)
+	if (_gripRefused || !cursor)
 	{
 		return true;
 	}
-	auto cursor = game.InputPosition();
-	if (!cursor)
+	// A turn, a zoom or a pitch in the last frame made the camera of the grip old. The new grip is the land under the
+	// cursor of the last frame, in the view that the user saw. Then the move of the cursor in this frame moves the land
+	// in this frame too. A smoothed zoom or pitch can change the view for many frames after the input stops, and a new
+	// grip at the cursor of this frame would remove the move of the cursor in each of those frames.
+	std::optional<WorldPoint> retakeAt;
+	if (std::exchange(_gripRetake, false) && _grip)
 	{
-		return true;
-	}
-	if (std::exchange(_gripRetake, false))
-	{
+		retakeAt = _grip->lastCursor;
 		_grip.reset();
 	}
 	auto& rig = *_rig;
 	if (!_grip)
 	{
 		// The grip is the land under the cursor in the view that the user sees.
+		const auto at = retakeAt.value_or(*cursor);
 		const auto rotation = HandRigRotation(rig.yaw, rig.pitch);
 		if (!game.SetCamera({.position = ShownCamera(), .rotation = rotation}))
 		{
 			return false;
 		}
-		auto land = game.LandUnderScreenPoint(*cursor);
+		auto land = game.LandUnderScreenPoint(at);
 		auto fieldOfView = game.FieldOfView();
 		auto screen = game.ScreenSize();
 		if (!land || !fieldOfView || !screen || screen->x <= 0.0f || screen->y <= 0.0f)
@@ -141,19 +160,25 @@ bool CameraLoop::StepGrip(CameraGame& game, bool rightHeld, bool rightPressed, W
 		_grip = LandGrip {.point = *land,
 		                  .origin = origin,
 		                  .rotation = rotation,
-		                  .cursor = *cursor,
+		                  .cursor = at,
 		                  .fieldOfView = *fieldOfView,
 		                  .screen = *screen,
 		                  .plane = GripPlaneThrough(*land, origin, *under),
 		                  // The limit of the move for each pixel grows with the zoom: the distance to the focus of the game.
 		                  .distance = Length(_focusWritten - origin),
-		                  .applied = {}};
-		_gripStarted = true;
-		_trace.gripActive = true;
-		Tell(CameraEventKind::Gesture, std::format("land grip at {}", FormatPoint(*land)));
-		return true;
+		                  .applied = {},
+		                  .lastCursor = at};
+		if (!retakeAt)
+		{
+			// A new drag. The cursor is at the grip, so the land does not move in this frame.
+			_gripStarted = true;
+			_trace.gripActive = true;
+			Tell(CameraEventKind::Gesture, std::format("land grip at {}", FormatPoint(*land)));
+			return true;
+		}
 	}
 	auto& grip = *_grip;
+	grip.lastCursor = *cursor;
 	_trace.gripActive = true;
 	const ScreenCamera camera {.position = grip.origin,
 	                           .rotation = grip.rotation,

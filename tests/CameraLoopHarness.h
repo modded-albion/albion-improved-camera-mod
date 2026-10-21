@@ -141,6 +141,10 @@ public:
 
 	// The input of this frame.
 	WorldPoint mouse {960.0f, 540.0f, 0.0f};
+	/// The input position of the game is the mouse of the last frame, as in the game: the game sets it after the mod
+	/// reads it.
+	bool inputPositionLate = false;
+	WorldPoint lastFrameMouse {960.0f, 540.0f, 0.0f}; ///< The mouse at the end of the last frame.
 	std::array<bool, 3> buttons {};
 	float wheel = 0.0f;
 	WorldPoint pan {};          ///< The key pan, metres for each second.
@@ -353,6 +357,7 @@ public:
 	/// After the frame: the hand finds the land under the cursor in the camera that the user sees.
 	void EndFrame()
 	{
+		lastFrameMouse = mouse;
 		const auto cursor = handOverride.value_or(mouse);
 		handScreen = cursor;
 		handOverride.reset();
@@ -615,7 +620,7 @@ public:
 		return std::nullopt;
 	}
 	[[nodiscard]] std::optional<WorldPoint> MousePosition() override { return mouse; }
-	[[nodiscard]] std::optional<WorldPoint> InputPosition() override { return mouse; }
+	[[nodiscard]] std::optional<WorldPoint> InputPosition() override { return inputPositionLate ? lastFrameMouse : mouse; }
 	[[nodiscard]] std::optional<float> WheelAxis() override { return wheel; }
 	[[nodiscard]] std::optional<bool> IgnoreWheel() override { return ignoreWheel; }
 	[[nodiscard]] bool SetIgnoreWheel(bool value) override

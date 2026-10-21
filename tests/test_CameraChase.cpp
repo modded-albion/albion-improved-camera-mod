@@ -438,6 +438,79 @@ TEST(LandGrip, DoesNotLeapNearTheHorizon)
 	}
 }
 
+TEST(LandGrip, MovesTheLandInTheFirstFrameOfMotionWhileAZoomEases)
+{
+	for (const auto rate : k_Rates)
+	{
+		SCOPED_TRACE(std::to_string(rate) + " fps");
+		const auto deltaTime = 1.0f / static_cast<float>(rate);
+		auto settings = RigSettings();
+		settings.dragInertia = 0.0;
+		auto harness = Settled(settings, 1.0f, deltaTime);
+		auto& game = harness.game;
+		// The input position of the game is one frame late, as in the game.
+		game.inputPositionLate = true;
+		game.mouse = {900.0f, 500.0f, 0.0f};
+		harness.Frame(deltaTime);
+		// A wheel notch. The smoothed zoom changes the view for many frames after it.
+		game.wheel = -0.1f;
+		harness.Frame(deltaTime);
+		game.wheel = 0.0f;
+		harness.Frame(deltaTime);
+		// The press, with no motion.
+		game.buttons[1] = true;
+		harness.Frame(deltaTime);
+		EXPECT_TRUE(harness.loop.Trace().gripActive);
+		// Each frame with motion moves the land in that frame, while the zoom eases.
+		for (int frame = 0; frame < rate / 4; ++frame)
+		{
+			const auto from = game.LandAt(game.transform, game.mouse);
+			game.mouse.x += 300.0f * deltaTime;
+			game.mouse.y -= 120.0f * deltaTime;
+			const auto to = game.LandAt(game.transform, game.mouse);
+			ASSERT_TRUE(from && to);
+			harness.Frame(deltaTime);
+			const auto& move = harness.loop.Trace().gripMove;
+			ASSERT_TRUE(move) << "frame " << frame;
+			EXPECT_GT(Length(*move), 0.5f * std::hypot(to->x - from->x, to->z - from->z)) << "frame " << frame;
+		}
+		game.buttons[1] = false;
+		harness.Frame(deltaTime);
+		EXPECT_TRUE(game.errors.empty());
+	}
+}
+
+TEST(LandGrip, ATapWithNoMotionDoesNotMoveTheLand)
+{
+	for (const auto rate : k_Rates)
+	{
+		SCOPED_TRACE(std::to_string(rate) + " fps");
+		const auto deltaTime = 1.0f / static_cast<float>(rate);
+		auto settings = RigSettings();
+		auto harness = Settled(settings, 1.0f, deltaTime);
+		auto& game = harness.game;
+		game.inputPositionLate = true;
+		// The cursor moves just before the press, and the input position of the game is still at the old place.
+		game.mouse = {900.0f, 500.0f, 0.0f};
+		harness.Frame(deltaTime);
+		game.mouse = {930.0f, 480.0f, 0.0f};
+		const auto start = harness.Shown();
+		// A tap: the press and the release, with no motion of the cursor.
+		game.buttons[1] = true;
+		for (int frame = 0; frame < rate / 10; ++frame)
+		{
+			harness.Frame(deltaTime);
+			EXPECT_TRUE(harness.loop.Trace().gripActive);
+			EXPECT_FALSE(harness.loop.Trace().gripMove && Length(*harness.loop.Trace().gripMove) > 1e-4f);
+		}
+		game.buttons[1] = false;
+		RunFor(harness, 1.0f, deltaTime);
+		// The camera does not move and does not glide. The game gets the right click (the press and the release).
+		EXPECT_LT(Length(harness.Shown() - start), 1e-3f);
+		EXPECT_TRUE(game.errors.empty());
+	}
+}
+
 /// The move of the camera that the user sees along x, for each frame of a key pan of one second and a wait.
 [[nodiscard]] std::vector<float> KeyPanSpeeds(int rate, double chaseSeconds)
 {
