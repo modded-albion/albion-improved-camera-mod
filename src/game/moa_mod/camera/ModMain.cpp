@@ -283,6 +283,41 @@ void RunAction(CameraModState& state, CameraAction action)
 	return "Fly to the view of the game at this zoom, with the north at the top.";
 }
 
+/// Register the queries of the inspector. The loader calls them on the main thread. A refused query does not stop the
+/// mod: the log tells it.
+void RegisterQueries(CameraModState& state)
+{
+	auto& host = *state.host;
+	if (!host.HasQueries())
+	{
+		spdlog::info("camera mod: the loader has no inspector queries");
+		return;
+	}
+	bool ok = host.AddQuery("camera.state", "The camera of the game and the state of the camera mod.",
+	                        [&state](const nlohmann::json& /*params*/) -> nlohmann::json {
+		                        auto gameManager = state.managed->SingletonInstance("GameManager");
+		                        if (!gameManager)
+		                        {
+			                        return {{"error", gameManager.GetError().message}};
+		                        }
+		                        return state.camera ? state.camera->State(*gameManager)
+		                                            : DescribeCamera(*state.managed, *state.bindings, *gameManager);
+	                        });
+	ok = host.AddQuery("camera.events", "The last events of the camera mod. Parameter: count (50 if not given).",
+	                   [&state](const nlohmann::json& params) -> nlohmann::json {
+		                   if (!state.camera)
+		                   {
+			                   return {{"error", "the camera mod is not installed"}};
+		                   }
+		                   return {{"events", state.camera->Events(params.value("count", size_t {50}))}};
+	                   }) &&
+	     ok;
+	if (!ok)
+	{
+		spdlog::warn("camera mod: the loader refused a query; see the log of the loader");
+	}
+}
+
 /// Register the settings, the fields, the actions, the readout, the status and the method callbacks.
 bool Register(CameraModState& state)
 {
@@ -410,6 +445,7 @@ uint32_t Init(const MoaHostApi* api, uint32_t apiVersion)
 		spdlog::error("camera mod: the loader refused a registration; the camera mod does not start");
 		return 0;
 	}
+	RegisterQueries(*state);
 	s_state = std::move(state);
 	return 1;
 }
