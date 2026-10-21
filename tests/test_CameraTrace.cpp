@@ -8,9 +8,9 @@
 #include <string>
 #include <vector>
 
+#include <core/CameraSettings.h>
+#include <core/CameraTrace.h>
 #include <gtest/gtest.h>
-#include <moa_mod/camera/CameraSettings.h>
-#include <moa_mod/camera/CameraTrace.h>
 
 using namespace moa_mod;
 using namespace moa_mod::camera;

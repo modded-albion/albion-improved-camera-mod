@@ -12,9 +12,9 @@
 #include <string>
 #include <vector>
 
+#include <core/CameraBlackBox.h>
+#include <core/CameraEvents.h>
 #include <gtest/gtest.h>
-#include <moa_mod/camera/CameraBlackBox.h>
-#include <moa_mod/camera/CameraEvents.h>
 
 #include "CameraLoopHarness.h"
 

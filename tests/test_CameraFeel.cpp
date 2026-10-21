@@ -10,8 +10,8 @@
 #include <array>
 #include <vector>
 
+#include <core/CameraFeel.h>
 #include <gtest/gtest.h>
-#include <moa_mod/camera/CameraFeel.h>
 
 #include "CameraLoopHarness.h"
 

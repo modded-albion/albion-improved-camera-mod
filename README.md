@@ -19,7 +19,7 @@ What it does, when `camera.enabled` is true in mods.json:
 ## How it uses the loader
 
 The DLL exports `MoaModApiVersion`, `MoaModGetInfo` (id `improved_camera`), `MoaModInit` and `MoaModShutdown`
-(`src/game/moa_mod/camera/ModMain.cpp`). In `MoaModInit` it:
+(`src/game/ModMain.cpp`). In `MoaModInit` it:
 
 - finds the IL2CPP exports and the managed names that it needs itself (common `moa_mod_game`). A missing name stops
   the init with 0, so the loader unloads the mod and the game continues;
@@ -62,6 +62,15 @@ runtime). Dependencies: vcpkg in manifest mode (`vcpkg.json`: nlohmann-json, spd
 `x64-windows-static`. The presets use `VCPKG_ROOT` = `D:/masters_of_albion/masters_of_albion_reforged/vcpkg` (the
 vcpkg checkout of the reforged repository; this repository has no vcpkg submodule), the binary cache
 `D:/masters_of_albion/cache/vcpkg-archives` and the downloads `D:/masters_of_albion/cache/vcpkg-downloads`.
+
+## Folders and include lines
+
+Each library has one folder: `src/core` (`moa_camera_core`), `src/game` (`improved_camera.dll`) and `tests/support`
+(`moa_camera_autotest`). The targets put `src` (or `tests`) on the include path, and common puts
+`external/common/src` there. An include line thus names the library folder and the file, for example
+`#include <core/CameraLoop.h>`, `#include "game/CameraMod.h"` or `#include <support/Scenario.h>`. The folders of
+common have other names (for example `mod_core`, `mod_game`), so an include path never finds two files. The C++
+namespaces do not follow the folders.
 
 ## The link to common
 

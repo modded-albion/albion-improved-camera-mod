@@ -11,8 +11,8 @@
 #include <string>
 #include <vector>
 
+#include <core/CameraNav.h>
 #include <gtest/gtest.h>
-#include <moa_mod/camera/CameraNav.h>
 
 #include "CameraLoopHarness.h"
 

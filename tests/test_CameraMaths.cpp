@@ -9,11 +9,11 @@
 #include <utility>
 #include <vector>
 
+#include <core/CameraDrag.h>
+#include <core/CameraInertia.h>
+#include <core/CameraPitch.h>
+#include <core/CameraPivot.h>
 #include <gtest/gtest.h>
-#include <moa_mod/camera/CameraDrag.h>
-#include <moa_mod/camera/CameraInertia.h>
-#include <moa_mod/camera/CameraPitch.h>
-#include <moa_mod/camera/CameraPivot.h>
 
 using namespace moa_mod;
 using namespace moa_mod::camera;

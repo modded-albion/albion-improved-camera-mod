@@ -14,9 +14,9 @@
 #include <string>
 #include <vector>
 
-#include <moa_mod/autotest/ScenarioRunner.h>
-#include <moa_mod/autotest/VirtualInput.h>
-#include <moa_mod/camera/CameraSettings.h>
+#include <core/CameraSettings.h>
+#include <support/ScenarioRunner.h>
+#include <support/VirtualInput.h>
 
 #include "CameraLoopHarness.h"
 #include "FadeHarness.h"

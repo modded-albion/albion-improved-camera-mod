@@ -12,7 +12,7 @@
 #include <optional>
 #include <vector>
 
-#include <moa_mod/camera/CameraFade.h>
+#include <core/CameraFade.h>
 
 #include "CameraLoopHarness.h"
 

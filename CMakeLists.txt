@@ -28,49 +28,49 @@ add_subdirectory(external/common)
 # the spring arm, the ground look, the navigation, the fade rules, the trace and the settings.
 add_library(
   moa_camera_core STATIC
-  src/core/moa_mod/camera/CameraBlackBox.h
-  src/core/moa_mod/camera/CameraChase.h
-  src/core/moa_mod/camera/CameraDrag.h
-  src/core/moa_mod/camera/CameraEvents.h
-  src/core/moa_mod/camera/CameraFade.h
-  src/core/moa_mod/camera/CameraFeel.h
-  src/core/moa_mod/camera/CameraGround.h
-  src/core/moa_mod/camera/CameraInertia.h
-  src/core/moa_mod/camera/CameraLand.h
-  src/core/moa_mod/camera/CameraLoop.h
-  src/core/moa_mod/camera/CameraNav.h
-  src/core/moa_mod/camera/CameraPitch.h
-  src/core/moa_mod/camera/CameraPivot.h
-  src/core/moa_mod/camera/CameraSettings.h
-  src/core/moa_mod/camera/CameraTrace.h
-  src/core/moa_mod/camera/HandRig.h
-  src/core/moa_mod/camera/MouseButtons.h
-  src/core/moa_mod/camera/CameraBlackBox.cpp
-  src/core/moa_mod/camera/CameraEvents.cpp
-  src/core/moa_mod/camera/CameraFade.cpp
-  src/core/moa_mod/camera/CameraLoop.cpp
-  src/core/moa_mod/camera/CameraLoopChase.cpp
-  src/core/moa_mod/camera/CameraLoopGround.cpp
-  src/core/moa_mod/camera/CameraLoopHand.cpp
-  src/core/moa_mod/camera/CameraLoopNav.cpp
-  src/core/moa_mod/camera/CameraNav.cpp
-  src/core/moa_mod/camera/CameraSettings.cpp
-  src/core/moa_mod/camera/CameraTrace.cpp
+  src/core/CameraBlackBox.h
+  src/core/CameraChase.h
+  src/core/CameraDrag.h
+  src/core/CameraEvents.h
+  src/core/CameraFade.h
+  src/core/CameraFeel.h
+  src/core/CameraGround.h
+  src/core/CameraInertia.h
+  src/core/CameraLand.h
+  src/core/CameraLoop.h
+  src/core/CameraNav.h
+  src/core/CameraPitch.h
+  src/core/CameraPivot.h
+  src/core/CameraSettings.h
+  src/core/CameraTrace.h
+  src/core/HandRig.h
+  src/core/MouseButtons.h
+  src/core/CameraBlackBox.cpp
+  src/core/CameraEvents.cpp
+  src/core/CameraFade.cpp
+  src/core/CameraLoop.cpp
+  src/core/CameraLoopChase.cpp
+  src/core/CameraLoopGround.cpp
+  src/core/CameraLoopHand.cpp
+  src/core/CameraLoopNav.cpp
+  src/core/CameraNav.cpp
+  src/core/CameraSettings.cpp
+  src/core/CameraTrace.cpp
 )
-target_include_directories(moa_camera_core PUBLIC src/core)
+target_include_directories(moa_camera_core PUBLIC src)
 target_link_libraries(moa_camera_core PUBLIC moa_common moa_mod_core)
 moa_set_warnings(moa_camera_core)
 
 if (WIN32)
   add_library(
     improved_camera SHARED
-    src/game/moa_mod/camera/CameraMod.cpp
-    src/game/moa_mod/camera/CameraMod.h
-    src/game/moa_mod/camera/GameFade.cpp
-    src/game/moa_mod/camera/GameFade.h
-    src/game/moa_mod/camera/ModMain.cpp
+    src/game/CameraMod.cpp
+    src/game/CameraMod.h
+    src/game/GameFade.cpp
+    src/game/GameFade.h
+    src/game/ModMain.cpp
   )
-  target_include_directories(improved_camera PRIVATE src/game)
+  target_include_directories(improved_camera PRIVATE src)
   target_link_libraries(improved_camera PRIVATE moa_camera_core moa_mod_game moa_mod_sdk)
   moa_set_warnings(improved_camera)
 endif ()

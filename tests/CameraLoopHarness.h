@@ -17,7 +17,7 @@
 #include <string>
 #include <vector>
 
-#include <moa_mod/camera/CameraLoop.h>
+#include <core/CameraLoop.h>
 
 namespace moa_mod::camera::test
 {

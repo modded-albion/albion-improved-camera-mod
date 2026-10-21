@@ -8,8 +8,8 @@
 #include <array>
 #include <vector>
 
+#include <core/CameraChase.h>
 #include <gtest/gtest.h>
-#include <moa_mod/camera/CameraChase.h>
 
 #include "CameraLoopHarness.h"
 

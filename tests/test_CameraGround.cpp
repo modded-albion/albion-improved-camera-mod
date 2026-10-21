@@ -13,8 +13,8 @@
 #include <optional>
 #include <vector>
 
+#include <core/CameraGround.h>
 #include <gtest/gtest.h>
-#include <moa_mod/camera/CameraGround.h>
 
 #include "CameraLoopHarness.h"
 

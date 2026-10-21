@@ -7,10 +7,10 @@
 #include <set>
 #include <string>
 
+#include <core/CameraSettings.h>
 #include <gtest/gtest.h>
-#include <moa_mod/Hotkey.h>
-#include <moa_mod/SettingsFile.h>
-#include <moa_mod/camera/CameraSettings.h>
+#include <mod_core/Hotkey.h>
+#include <mod_core/SettingsFile.h>
 #include <nlohmann/json.hpp>
 
 using namespace moa_mod;

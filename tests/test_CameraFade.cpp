@@ -7,8 +7,8 @@
 #include <array>
 #include <vector>
 
+#include <core/CameraFade.h>
 #include <gtest/gtest.h>
-#include <moa_mod/camera/CameraFade.h>
 
 #include "FadeHarness.h"
 
